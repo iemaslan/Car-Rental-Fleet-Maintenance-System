@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}CRFMS - Reservation #{{ reservation.id }}{% endblock %}
+
+{% block header_title %}📅 Reservation Details{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Reservation #{{ reservation.id }}</h2>
+        {% if reservation.is_cancelled %}
+            <span class="status-badge badge-danger" style="font-size: 16px; padding: 10px 20px;">CANCELLED</span>
+        {% else %}
+            <span class="status-badge badge-success" style="font-size: 16px; padding: 10px 20px;">CONFIRMED</span>
+        {% endif %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 15px;">👤 Customer Information</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+                <p><strong>Name:</strong> {{ reservation.customer.name }}</p>
+                <p><strong>Email:</strong> {{ reservation.customer.email }}</p>
+                <p><strong>Phone:</strong> {{ reservation.customer.phone }}</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 15px;">🚗 Vehicle Information</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+                <p><strong>Class:</strong> {{ reservation.vehicle_class.name }}</p>
+                <p><strong>Location:</strong> {{ reservation.location.name }}</p>
+                <p><strong>Base Rate:</strong> ${{ reservation.vehicle_class.base_rate.amount }}/day</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">📅 Rental Period</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div>
+                    <strong>Pickup:</strong><br>
+                    {{ reservation.pickup_time.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+                <div>
+                    <strong>Return:</strong><br>
+                    {{ reservation.return_time.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+                <div>
+                    <strong>Duration:</strong><br>
+                    {{ reservation.duration_in_days() }} days
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if reservation.addons %}
+    <div style="margin-top: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">🎁 Add-Ons</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            {% for addon in reservation.addons %}
+            <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd;">
+                <span>{{ addon.name }}</span>
+                <span>${{ addon.daily_fee.amount }}/day</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if reservation.insurance_tier %}
+    <div style="margin-top: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">🛡️ Insurance</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <div style="display: flex; justify-content: space-between;">
+                <span><strong>{{ reservation.insurance_tier.name }}</strong></span>
+                <span>${{ reservation.insurance_tier.daily_fee.amount }}/day</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">💰 Deposit</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <p style="font-size: 24px; color: #667eea; font-weight: bold;">
+                ${{ reservation.deposit.amount }}
+            </p>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; gap: 10px;">
+        <a href="/reservations" class="btn">← Back to Reservations</a>
+    </div>
+</div>
+{% endblock %}

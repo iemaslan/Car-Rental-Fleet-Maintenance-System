@@ -1,0 +1,402 @@
+@startuml CRFMS_Class_Diagram
+
+' Value Objects
+class Money <<value object>> {
+  - amount: Decimal
+  - currency: str
+  + __add__(other: Money): Money
+  + __sub__(other: Money): Money
+  + __mul__(multiplier): Money
+  + zero(): Money
+}
+
+class FuelLevel <<value object>> {
+  - level: float
+  + __sub__(other: FuelLevel): float
+  + full(): FuelLevel
+  + empty(): FuelLevel
+}
+
+class Kilometers <<value object>> {
+  - value: int
+  + __add__(other: Kilometers): Kilometers
+  + __sub__(other: Kilometers): Kilometers
+  + zero(): Kilometers
+}
+
+' Clock Interface
+interface Clock {
+  + {abstract} now(): datetime
+  + now_iso(): str
+}
+
+class SystemClock {
+  + now(): datetime
+}
+
+class FixedClock {
+  - _fixed_time: datetime
+  + now(): datetime
+  + set_time(new_time: datetime): void
+  + advance(**kwargs): void
+}
+
+' Core Entities
+enum VehicleStatus {
+  AVAILABLE
+  RESERVED
+  RENTED
+  OUT_OF_SERVICE
+  CLEANING
+}
+
+class Customer {
+  - id: int
+  - name: str
+  - email: str
+  - phone: str
+}
+
+class Agent {
+  - id: int
+  - name: str
+  - branch: str
+}
+
+class Location {
+  - id: int
+  - name: str
+  - address: str
+}
+
+class VehicleClass {
+  - name: str
+  - base_rate: Money
+  - daily_mileage_allowance: int
+}
+
+class Vehicle {
+  - id: int
+  - vehicle_class: VehicleClass
+  - location: Location
+  - status: VehicleStatus
+  - odometer: Kilometers
+  - fuel_level: FuelLevel
+  + can_be_assigned(): bool
+  + mark_as_rented(): void
+  + mark_as_available(): void
+  + mark_as_out_of_service(): void
+  + mark_as_cleaning(): void
+}
+
+class AddOn {
+  - name: str
+  - daily_fee: Money
+}
+
+class InsuranceTier {
+  - name: str
+  - daily_fee: Money
+}
+
+class Reservation {
+  - id: int
+  - customer: Customer
+  - vehicle_class: VehicleClass
+  - location: Location
+  - pickup_time: datetime
+  - return_time: datetime
+  - addons: List<AddOn>
+  - insurance_tier: InsuranceTier
+  - deposit: Money
+  + duration_in_days(): int
+}
+
+class RentalAgreement {
+  - id: int
+  - reservation: Reservation
+  - vehicle: Vehicle
+  - pickup_token: str
+  - start_odometer: Kilometers
+  - start_fuel_level: FuelLevel
+  - pickup_time: datetime
+  - expected_return_time: datetime
+  - actual_return_time: datetime
+  - end_odometer: Kilometers
+  - end_fuel_level: FuelLevel
+  - charge_items: List<ChargeItem>
+  - is_completed: bool
+  + is_overdue(current_time, grace_period_hours): bool
+  + calculate_late_hours(current_time, grace_period_hours): int
+  + driven_distance(): Kilometers
+  + add_charge(charge_item: ChargeItem): void
+  + total_charges(): Money
+}
+
+class MaintenanceRecord {
+  - id: int
+  - vehicle: Vehicle
+  - service_type: str
+  - odometer_threshold: Kilometers
+  - time_threshold: datetime
+  - last_service_date: datetime
+  - last_service_odometer: Kilometers
+  + is_due(current_odometer, current_time, threshold_km): bool
+}
+
+class ChargeItem <<value object>> {
+  - description: str
+  - amount: Money
+}
+
+class Invoice {
+  - id: int
+  - rental_agreement: RentalAgreement
+  - charge_items: List<ChargeItem>
+  - total_amount: Money
+  - status: str
+  - created_at: datetime
+  + {static} from_rental_agreement(invoice_id, rental_agreement, created_at): Invoice
+}
+
+class Payment {
+  - id: int
+  - invoice: Invoice
+  - amount: Money
+  - status: str
+  - timestamp: datetime
+}
+
+class Notification {
+  - type: str
+  - recipient: str
+  - message: str
+  - timestamp: datetime
+}
+
+' Pricing Strategy Pattern
+interface PricingRule {
+  + {abstract} calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class BaseRateRule {
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class AddOnRule {
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class InsuranceRule {
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class LateFeeRule {
+  - hourly_rate: Money
+  - grace_period_hours: int
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class MileageOverageRule {
+  - per_km_rate: Money
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class FuelRefillRule {
+  - per_level_charge: Money
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class WeekendMultiplierRule {
+  - multiplier: float
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class SeasonMultiplierRule {
+  - peak_months: List<int>
+  - multiplier: float
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class DamageChargeRule {
+  - damage_amount: Money
+  + calculate(rental_agreement, clock): List<ChargeItem>
+}
+
+class PricingPolicy {
+  - clock: Clock
+  - rules: List<PricingRule>
+  + add_rule(rule: PricingRule): PricingPolicy
+  + calculate_charges(rental_agreement): List<ChargeItem>
+  + calculate_total(rental_agreement): Money
+}
+
+' Ports
+interface NotificationPort {
+  + {abstract} send_notification(notification: Notification): bool
+}
+
+interface PaymentPort {
+  + {abstract} authorize_payment(invoice, amount): Payment
+  + {abstract} capture_payment(payment): bool
+  + {abstract} process_payment(invoice, amount): Payment
+}
+
+' Adapters
+class InMemoryNotificationAdapter {
+  - clock: Clock
+  - sent_notifications: List<Notification>
+  + send_notification(notification): bool
+  + list_notifications(): List<Notification>
+  + get_notifications_by_type(type): List<Notification>
+  + clear_notifications(): void
+}
+
+class FakePaymentAdapter {
+  - clock: Clock
+  - simulate_failure: bool
+  - payments: List<Payment>
+  - transactions: List<Dict>
+  - next_payment_id: int
+  + set_simulate_failure(simulate_failure): void
+  + authorize_payment(invoice, amount): Payment
+  + capture_payment(payment): bool
+  + process_payment(invoice, amount): Payment
+  + list_payments(): List<Payment>
+  + list_transactions(): List<Dict>
+}
+
+' Services
+class InventoryService {
+  - clock: Clock
+  - maintenance_service: MaintenanceService
+  - vehicles: Dict<int, Vehicle>
+  + add_vehicle(vehicle): void
+  + get_vehicle(vehicle_id): Vehicle
+  + check_availability(vehicle_class, location, start_time, end_time): Dict
+  + search_available_classes(location, start_time, end_time): List<Dict>
+  + list_vehicles_by_location(location): List<Vehicle>
+  + get_vehicle_statistics(): Dict
+}
+
+class ReservationService {
+  - clock: Clock
+  - notification_port: NotificationPort
+  - reservations: Dict<int, Reservation>
+  - next_id: int
+  + create_reservation(customer, vehicle_class, location, pickup_time, return_time, addons, insurance_tier, deposit): Reservation
+  + modify_reservation(reservation_id, pickup_time, return_time, addons, insurance_tier): Reservation
+  + cancel_reservation(reservation_id): bool
+  + get_reservation(reservation_id): Reservation
+  + list_customer_reservations(customer_id): List<Reservation>
+  + send_pickup_reminder(reservation_id): bool
+}
+
+class RentalService {
+  - clock: Clock
+  - pricing_policy: PricingPolicy
+  - maintenance_service: MaintenanceService
+  - rental_agreements: Dict<int, RentalAgreement>
+  - pickup_tokens: Set<str>
+  - vehicle_rentals: Dict<int, int>
+  - next_id: int
+  + pickup_vehicle(reservation, vehicle, start_odometer, start_fuel_level, pickup_token): RentalAgreement
+  + return_vehicle(rental_agreement_id, end_odometer, end_fuel_level): RentalAgreement
+  + extend_rental(rental_agreement_id, new_return_time): bool
+  + get_active_rental_by_vehicle(vehicle_id): RentalAgreement
+  + list_overdue_rentals(grace_period_hours): List<RentalAgreement>
+}
+
+class MaintenanceService {
+  - clock: Clock
+  - maintenance_records: Dict<int, List<MaintenanceRecord>>
+  - next_record_id: int
+  + register_maintenance_plan(vehicle, service_type, odometer_threshold, time_threshold): MaintenanceRecord
+  + is_maintenance_due(vehicle, threshold_km): bool
+  + list_due_vehicles(vehicles, threshold_km): List<Vehicle>
+  + get_due_maintenance_records(vehicle, threshold_km): List<MaintenanceRecord>
+  + can_vehicle_be_assigned(vehicle): bool
+  + complete_maintenance(vehicle, service_type): void
+}
+
+class AccountingService {
+  - clock: Clock
+  - payment_port: PaymentPort
+  - notification_port: NotificationPort
+  - invoices: Dict<int, Invoice>
+  - next_id: int
+  + create_invoice(rental_agreement): Invoice
+  + authorize_deposit(invoice, amount): Payment
+  + finalize_payment(invoice): bool
+  + list_pending_invoices(): List<Invoice>
+  + get_invoice(invoice_id): Invoice
+}
+
+' Relationships
+Clock <|-- SystemClock
+Clock <|-- FixedClock
+
+Vehicle "*" --> "1" VehicleClass
+Vehicle "*" --> "1" Location
+Vehicle "1" --> "1" VehicleStatus
+Vehicle "1" --> "1" Kilometers
+Vehicle "1" --> "1" FuelLevel
+
+Reservation "*" --> "1" Customer
+Reservation "*" --> "1" VehicleClass
+Reservation "*" --> "1" Location
+Reservation "1" o-- "*" AddOn
+Reservation "*" --> "0..1" InsuranceTier
+Reservation "1" --> "1" Money
+
+RentalAgreement "*" --> "1" Reservation
+RentalAgreement "*" --> "1" Vehicle
+RentalAgreement "1" o-- "*" ChargeItem
+
+MaintenanceRecord "*" --> "1" Vehicle
+
+Invoice "*" --> "1" RentalAgreement
+Invoice "1" o-- "*" ChargeItem
+Invoice "1" --> "1" Money
+
+Payment "*" --> "1" Invoice
+Payment "1" --> "1" Money
+
+PricingRule <|-- BaseRateRule
+PricingRule <|-- AddOnRule
+PricingRule <|-- InsuranceRule
+PricingRule <|-- LateFeeRule
+PricingRule <|-- MileageOverageRule
+PricingRule <|-- FuelRefillRule
+PricingRule <|-- WeekendMultiplierRule
+PricingRule <|-- SeasonMultiplierRule
+PricingRule <|-- DamageChargeRule
+
+PricingPolicy "1" o-- "*" PricingRule
+PricingPolicy "*" --> "1" Clock
+
+NotificationPort <|-- InMemoryNotificationAdapter
+PaymentPort <|-- FakePaymentAdapter
+
+InventoryService "*" --> "1" Clock
+InventoryService "*" --> "1" MaintenanceService
+InventoryService "1" o-- "*" Vehicle
+
+ReservationService "*" --> "1" Clock
+ReservationService "*" --> "1" NotificationPort
+ReservationService "1" o-- "*" Reservation
+
+RentalService "*" --> "1" Clock
+RentalService "*" --> "1" PricingPolicy
+RentalService "*" --> "1" MaintenanceService
+RentalService "1" o-- "*" RentalAgreement
+
+MaintenanceService "*" --> "1" Clock
+MaintenanceService "1" o-- "*" MaintenanceRecord
+
+AccountingService "*" --> "1" Clock
+AccountingService "*" --> "1" PaymentPort
+AccountingService "*" --> "1" NotificationPort
+AccountingService "1" o-- "*" Invoice
+
+@enduml

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}CRFMS - Vehicles{% endblock %}
+
+{% block header_title %}🚗 Vehicle Inventory{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2>All Vehicles</h2>
+    
+    {% if vehicles %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Class</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Odometer</th>
+                <th>Fuel Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicle in vehicles %}
+            <tr>
+                <td><strong>#{{ vehicle.id }}</strong></td>
+                <td>{{ vehicle.vehicle_class.name }}</td>
+                <td>{{ vehicle.location.name }}</td>
+                <td>
+                    {% if vehicle.status.value == 'Available' %}
+                        <span class="status-badge badge-success">Available</span>
+                    {% elif vehicle.status.value == 'Rented' %}
+                        <span class="status-badge badge-danger">Rented</span>
+                    {% elif vehicle.status.value == 'Reserved' %}
+                        <span class="status-badge badge-warning">Reserved</span>
+                    {% elif vehicle.status.value == 'OutOfService' %}
+                        <span class="status-badge badge-secondary">Out of Service</span>
+                    {% else %}
+                        <span class="status-badge badge-info">{{ vehicle.status.value }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ vehicle.odometer.value }} km</td>
+                <td>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 100px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+                            <div style="width: {{ (vehicle.fuel_level.level * 100)|int }}%; height: 100%; background: linear-gradient(90deg, #11998e, #38ef7d);"></div>
+                        </div>
+                        <span style="margin-left: 10px; font-size: 12px;">{{ (vehicle.fuel_level.level * 100)|int }}%</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🚗</div>
+        <h3>No Vehicles in Fleet</h3>
+        <p>The fleet is empty</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

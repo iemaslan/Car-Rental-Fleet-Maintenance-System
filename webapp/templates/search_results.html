@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}CRFMS - Search Results{% endblock %}
+
+{% block header_title %}🔍 Search Results{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2>Availability Results</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">Search Criteria</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+                <strong>Pickup:</strong><br>
+                {{ pickup_date }}
+            </div>
+            <div>
+                <strong>Return:</strong><br>
+                {{ return_date }}
+            </div>
+        </div>
+    </div>
+
+    {% if availability.available_count > 0 %}
+    <div class="alert alert-success">
+        <strong>✅ Great News!</strong> {{ availability.available_count }} vehicle(s) available out of {{ availability.total_count }} total vehicles.
+    </div>
+
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin: 20px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.2);">
+        <h3 style="margin-bottom: 20px;">📊 Availability Summary</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div style="text-align: center;">
+                <div style="font-size: 36px; font-weight: bold;">{{ availability.available_count }}</div>
+                <div style="font-size: 14px; opacity: 0.9;">Available</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 36px; font-weight: bold;">{{ availability.total_count }}</div>
+                <div style="font-size: 14px; opacity: 0.9;">Total</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 36px; font-weight: bold;">{{ availability.maintenance_hold_count }}</div>
+                <div style="font-size: 14px; opacity: 0.9;">Maintenance</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="/reservations/create" class="btn btn-success" style="padding: 15px 40px; font-size: 16px;">
+            ➕ Create Reservation Now
+        </a>
+    </div>
+
+    {% else %}
+    <div class="alert alert-danger">
+        <strong>❌ Sorry!</strong> No vehicles available for your selected dates.
+        {% if availability.maintenance_hold_count > 0 %}
+        <br><br>
+        <strong>Note:</strong> {{ availability.maintenance_hold_count }} vehicle(s) are currently under maintenance.
+        {% endif %}
+    </div>
+
+    <div class="empty-state">
+        <div class="empty-state-icon">😕</div>
+        <h3>No Vehicles Available</h3>
+        <p>Try different dates or contact us for alternatives</p>
+        <br>
+        <a href="/search" class="btn">Try Different Dates</a>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+        <a href="/search" class="btn">← Back to Search</a>
+    </div>
+</div>
+{% endblock %}
