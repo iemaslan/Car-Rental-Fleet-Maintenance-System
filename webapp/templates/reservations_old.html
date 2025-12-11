@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Reservation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Make a Reservation</h1>
+        <form method="POST" action="/reservations">
+            <div class="mb-3">
+                <label for="vehicleClass" class="form-label">Vehicle Class</label>
+                <select class="form-select" id="vehicleClass" name="vehicleClass">
+                    <option value="Economy">Economy</option>
+                    <option value="Compact">Compact</option>
+                    <option value="SUV">SUV</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="pickupTime" class="form-label">Pickup Time</label>
+                <input type="datetime-local" class="form-control" id="pickupTime" name="pickupTime">
+            </div>
+            <div class="mb-3">
+                <label for="returnTime" class="form-label">Return Time</label>
+                <input type="datetime-local" class="form-control" id="returnTime" name="returnTime">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

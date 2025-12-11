@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW2 Test Dashboard - Car Rental System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-card .label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .test-modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .module-card .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .module-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .module-card button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .module-card button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .module-card button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .results-header h2 {
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .status-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .test-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .test-output .passed {
+            color: #4ec9b0;
+        }
+
+        .test-output .failed {
+            color: #f48771;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .coverage-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .coverage-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            width: 100%;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .coverage-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚗 CRFMS Test Suite Dashboard</h1>
+            <p class="subtitle">Car Rental & Fleet Maintenance System - Pytest Suite</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <div class="number">135</div>
+                <div class="label">Total Tests</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">10+</div>
+                <div class="label">Parametrized Tests</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">30+</div>
+                <div class="label">Fixtures</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">77%</div>
+                <div class="label">Code Coverage</div>
+            </div>
+        </div>
+
+        <!-- Test Modules -->
+        <div class="test-modules">
+            {% for key, module in modules.items() %}
+            <div class="module-card">
+                <div class="icon">{{ module.icon }}</div>
+                <h3>{{ module.name }}</h3>
+                <p>{{ module.description }}</p>
+                <button onclick="runTest('{{ key }}', this)">Run Tests</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Coverage Section -->
+        <div class="coverage-section">
+            <h2 style="margin-bottom: 20px;">📊 Coverage Report</h2>
+            <button class="coverage-button" onclick="runCoverage(this)">
+                Generate Coverage Report
+            </button>
+            <div id="coverage-output"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results">
+            <div class="results-header">
+                <h2 id="results-title">Test Results</h2>
+                <span class="status-badge" id="status-badge"></span>
+            </div>
+            <div class="timestamp" id="timestamp"></div>
+            <div class="test-output" id="output"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p style="margin-top: 15px; font-size: 0.9em;">© 2025 CRFMS - Car Rental & Fleet Maintenance System</p>
+        <p style="font-size: 0.95em; margin-top: 5px;">Developed by İrem Aslan</p>
+    </div>
+
+    <script>
+        async function runTest(module, button) {
+            const resultsSection = document.getElementById('results');
+            const output = document.getElementById('output');
+            const statusBadge = document.getElementById('status-badge');
+            const resultsTitle = document.getElementById('results-title');
+            const timestamp = document.getElementById('timestamp');
+
+            // Show results section
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Show loading
+            output.innerHTML = '<div class="loading"><div class="spinner"></div><p>Running tests...</p></div>';
+            button.disabled = true;
+            button.textContent = 'Running...';
+
+            try {
+                const response = await fetch('/run-tests', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ module: module })
+                });
+
+                const data = await response.json();
+
+                // Update results
+                resultsTitle.textContent = `Test Results - ${module.charAt(0).toUpperCase() + module.slice(1)}`;
+                
+                if (data.success) {
+                    statusBadge.className = 'status-badge success';
+                    statusBadge.textContent = `✅ ${data.summary}`;
+                } else {
+                    statusBadge.className = 'status-badge error';
+                    statusBadge.textContent = `❌ ${data.failed} failed, ${data.passed} passed`;
+                }
+
+                timestamp.textContent = `Executed at: ${data.timestamp}`;
+                
+                // Format output with colors
+                let formattedOutput = data.output
+                    .replace(/PASSED/g, '<span class="passed">PASSED</span>')
+                    .replace(/FAILED/g, '<span class="failed">FAILED</span>');
+                
+                output.innerHTML = formattedOutput;
+
+            } catch (error) {
+                statusBadge.className = 'status-badge error';
+                statusBadge.textContent = '❌ Error';
+                output.textContent = 'Error: ' + error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Run Tests';
+            }
+        }
+
+        async function runCoverage(button) {
+            const coverageOutput = document.getElementById('coverage-output');
+            
+            button.disabled = true;
+            button.textContent = 'Generating...';
+            coverageOutput.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating coverage report...</p></div>';
+
+            try {
+                const response = await fetch('/run-coverage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                coverageOutput.innerHTML = `
+                    <div class="test-output">${data.coverage}</div>
+                    <p class="timestamp">Generated at: ${data.timestamp}</p>
+                `;
+
+            } catch (error) {
+                coverageOutput.innerHTML = `
+                    <div class="test-output" style="color: #f48771;">Error: ${error.message}</div>
+                `;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Generate Coverage Report';
+            }
+        }
+
+        // Auto-scroll code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeBlocks = document.querySelectorAll('.test-output');
+            codeBlocks.forEach(block => {
+                block.addEventListener('wheel', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

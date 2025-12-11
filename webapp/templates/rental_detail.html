@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}CRFMS - Rental #{{ rental.id }}{% endblock %}
+
+{% block header_title %}📋 Rental Agreement Details{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Rental Agreement #{{ rental.id }}</h2>
+        {% if rental.actual_return_time %}
+            <span class="status-badge badge-info" style="font-size: 16px; padding: 10px 20px;">COMPLETED</span>
+        {% elif rental.is_overdue() %}
+            <span class="status-badge badge-danger" style="font-size: 16px; padding: 10px 20px;">OVERDUE</span>
+        {% else %}
+            <span class="status-badge badge-success" style="font-size: 16px; padding: 10px 20px;">ACTIVE</span>
+        {% endif %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 15px;">👤 Customer</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+                <p><strong>{{ rental.reservation.customer.name }}</strong></p>
+                <p>{{ rental.reservation.customer.email }}</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 15px;">🚗 Vehicle</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+                <p><strong>{{ rental.vehicle.vehicle_class.name }}</strong> (#{{ rental.vehicle.id }})</p>
+                <p>{{ rental.vehicle.location.name }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">📅 Rental Period</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div>
+                    <strong>Pickup:</strong><br>
+                    {{ rental.pickup_time.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+                <div>
+                    <strong>Due Return:</strong><br>
+                    {{ rental.expected_return_time.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+                {% if rental.actual_return_time %}
+                <div>
+                    <strong>Actual Return:</strong><br>
+                    {{ rental.actual_return_time.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">🔧 Vehicle Readings</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px;">
+                <div>
+                    <strong>Start Odometer:</strong><br>
+                    {{ rental.start_odometer.value }} km
+                </div>
+                <div>
+                    <strong>Start Fuel:</strong><br>
+                    {{ (rental.start_fuel.level * 100)|int }}%
+                </div>
+                {% if rental.end_odometer %}
+                <div>
+                    <strong>End Odometer:</strong><br>
+                    {{ rental.end_odometer.value }} km
+                </div>
+                {% endif %}
+                {% if rental.end_fuel %}
+                <div>
+                    <strong>End Fuel:</strong><br>
+                    {{ (rental.end_fuel.level * 100)|int }}%
+                </div>
+                {% endif %}
+            </div>
+            {% if rental.end_odometer %}
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                <strong>Distance Driven:</strong> {{ rental.driven_distance().value }} km
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if rental.agent %}
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">👔 Agent</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <p><strong>{{ rental.agent.name }}</strong> - {{ rental.agent.branch }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if invoice %}
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">💰 Invoice #{{ invoice.id }}</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px;">
+            {% for item in invoice.charge_items %}
+            <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd;">
+                <span>{{ item.description }}</span>
+                <span style="font-weight: bold;">${{ item.amount.amount }}</span>
+            </div>
+            {% endfor %}
+            <div style="display: flex; justify-content: space-between; padding: 15px 10px; margin-top: 10px; background: white; border-radius: 5px; font-size: 18px;">
+                <span style="font-weight: bold;">Total:</span>
+                <span style="font-weight: bold; color: #667eea;">${{ invoice.total_amount.amount }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+        <a href="/rentals" class="btn">← Back to Rentals</a>
+    </div>
+</div>
+{% endblock %}

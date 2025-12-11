@@ -1,0 +1,1019 @@
+{
+  "created": 1765482863.069797,
+  "duration": 0.04064512252807617,
+  "exitcode": 0,
+  "root": "/Users/cansomer/Desktop/Car-Rental-Fleet-Maintenance-System-main",
+  "environment": {},
+  "summary": {
+    "passed": 31,
+    "total": 31,
+    "collected": 31
+  },
+  "collectors": [
+    {
+      "nodeid": "",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py",
+          "type": "Module"
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestBasicPricing",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestBasicPricing::test_base_rate_calculation",
+          "type": "Function",
+          "lineno": 21
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestBasicPricing::test_minimum_duration_rental",
+          "type": "Function",
+          "lineno": 54
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestBasicPricing::test_unusually_long_rental",
+          "type": "Function",
+          "lineno": 85
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance::test_single_addon_pricing",
+          "type": "Function",
+          "lineno": 119
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance::test_multiple_addons_pricing",
+          "type": "Function",
+          "lineno": 152
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance::test_insurance_tier_pricing",
+          "type": "Function",
+          "lineno": 189
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestDynamicFactors",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_weekend_surcharge_saturday_pickup",
+          "type": "Function",
+          "lineno": 362
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_no_weekend_surcharge_weekday",
+          "type": "Function",
+          "lineno": 396
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_peak_season_surcharge",
+          "type": "Function",
+          "lineno": 428
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_no_peak_season_surcharge_off_season",
+          "type": "Function",
+          "lineno": 461
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestLateFeeCalculation",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestLateFeeCalculation::test_late_fee_beyond_grace_period",
+          "type": "Function",
+          "lineno": 497
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestLateFeeCalculation::test_no_late_fee_within_grace_period",
+          "type": "Function",
+          "lineno": 532
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_mileage_overage_charge",
+          "type": "Function",
+          "lineno": 569
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_no_mileage_overage_within_allowance",
+          "type": "Function",
+          "lineno": 603
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_fuel_refill_charge",
+          "type": "Function",
+          "lineno": 635
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_no_fuel_charge_same_or_higher_level",
+          "type": "Function",
+          "lineno": 667
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestCompletePricingPolicy",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestCompletePricingPolicy::test_complete_pricing_all_charges",
+          "type": "Function",
+          "lineno": 703
+        }
+      ]
+    },
+    {
+      "nodeid": "tests/test_pricing.py",
+      "outcome": "passed",
+      "result": [
+        {
+          "nodeid": "tests/test_pricing.py::TestBasicPricing",
+          "type": "Class"
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance",
+          "type": "Class"
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Economy-30.00-3-90.00]",
+          "type": "Function",
+          "lineno": 223
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Economy-30.00-7-210.00]",
+          "type": "Function",
+          "lineno": 223
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Compact-40.00-3-120.00]",
+          "type": "Function",
+          "lineno": 223
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_base_rate_combinations[SUV-70.00-5-350.00]",
+          "type": "Function",
+          "lineno": 223
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Luxury-120.00-2-240.00]",
+          "type": "Function",
+          "lineno": 223
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Luxury-120.00-10-1200.00]",
+          "type": "Function",
+          "lineno": 223
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config0-3-30.00]",
+          "type": "Function",
+          "lineno": 268
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config1-5-75.00]",
+          "type": "Function",
+          "lineno": 268
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config2-7-210.00]",
+          "type": "Function",
+          "lineno": 268
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config3-3-0.00]",
+          "type": "Function",
+          "lineno": 268
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[Basic-10.00-3-30.00]",
+          "type": "Function",
+          "lineno": 315
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[Premium-25.00-5-125.00]",
+          "type": "Function",
+          "lineno": 315
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[FullCoverage-40.00-7-280.00]",
+          "type": "Function",
+          "lineno": 315
+        },
+        {
+          "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[None-None-3-0.00]",
+          "type": "Function",
+          "lineno": 315
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestDynamicFactors",
+          "type": "Class"
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestLateFeeCalculation",
+          "type": "Class"
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges",
+          "type": "Class"
+        },
+        {
+          "nodeid": "tests/test_pricing.py::TestCompletePricingPolicy",
+          "type": "Class"
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "nodeid": "tests/test_pricing.py::TestBasicPricing::test_base_rate_calculation",
+      "lineno": 21,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_calculation",
+        "TestBasicPricing",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0004439999993337551,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.0001788339995982824,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.0001335420001851162,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestBasicPricing::test_minimum_duration_rental",
+      "lineno": 54,
+      "outcome": "passed",
+      "keywords": [
+        "test_minimum_duration_rental",
+        "TestBasicPricing",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00020662499991885852,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00013000000035390258,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011191699923074339,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestBasicPricing::test_unusually_long_rental",
+      "lineno": 85,
+      "outcome": "passed",
+      "keywords": [
+        "test_unusually_long_rental",
+        "TestBasicPricing",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00018729200019151904,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.0001176249988930067,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010358299914514646,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance::test_single_addon_pricing",
+      "lineno": 119,
+      "outcome": "passed",
+      "keywords": [
+        "test_single_addon_pricing",
+        "TestAddOnsAndInsurance",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00020166699869150762,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011229099982301705,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010520799878577236,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance::test_multiple_addons_pricing",
+      "lineno": 152,
+      "outcome": "passed",
+      "keywords": [
+        "test_multiple_addons_pricing",
+        "TestAddOnsAndInsurance",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023129200053517707,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00012187499851279426,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011037500007660128,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestAddOnsAndInsurance::test_insurance_tier_pricing",
+      "lineno": 189,
+      "outcome": "passed",
+      "keywords": [
+        "test_insurance_tier_pricing",
+        "TestAddOnsAndInsurance",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002060409988189349,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011262499901931733,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010504200145078357,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Economy-30.00-3-90.00]",
+      "lineno": 223,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_combinations[Economy-30.00-3-90.00]",
+        "parametrize",
+        "pytestmark",
+        "Economy-30.00-3-90.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002752919990598457,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011116600035165902,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011166699914610945,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Economy-30.00-7-210.00]",
+      "lineno": 223,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_combinations[Economy-30.00-7-210.00]",
+        "parametrize",
+        "pytestmark",
+        "Economy-30.00-7-210.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00025441599973419216,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011408299906179309,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010804200064740144,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Compact-40.00-3-120.00]",
+      "lineno": 223,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_combinations[Compact-40.00-3-120.00]",
+        "parametrize",
+        "pytestmark",
+        "Compact-40.00-3-120.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00024525000117137097,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011124999946332537,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.000112749999971129,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_base_rate_combinations[SUV-70.00-5-350.00]",
+      "lineno": 223,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_combinations[SUV-70.00-5-350.00]",
+        "parametrize",
+        "pytestmark",
+        "SUV-70.00-5-350.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002435000005789334,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010395900062576402,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010379200102761388,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Luxury-120.00-2-240.00]",
+      "lineno": 223,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_combinations[Luxury-120.00-2-240.00]",
+        "parametrize",
+        "pytestmark",
+        "Luxury-120.00-2-240.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023562500064144842,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.000103750000562286,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010700000166252721,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_base_rate_combinations[Luxury-120.00-10-1200.00]",
+      "lineno": 223,
+      "outcome": "passed",
+      "keywords": [
+        "test_base_rate_combinations[Luxury-120.00-10-1200.00]",
+        "parametrize",
+        "pytestmark",
+        "Luxury-120.00-10-1200.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023624999994353857,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010487500003364403,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011099999937869143,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config0-3-30.00]",
+      "lineno": 268,
+      "outcome": "passed",
+      "keywords": [
+        "test_addon_combinations[addons_config0-3-30.00]",
+        "parametrize",
+        "pytestmark",
+        "addons_config0-3-30.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023799999871698674,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.0001099580003938172,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010758400094346143,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config1-5-75.00]",
+      "lineno": 268,
+      "outcome": "passed",
+      "keywords": [
+        "test_addon_combinations[addons_config1-5-75.00]",
+        "parametrize",
+        "pytestmark",
+        "addons_config1-5-75.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023408299966831692,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011366699982318096,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010591700083750766,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config2-7-210.00]",
+      "lineno": 268,
+      "outcome": "passed",
+      "keywords": [
+        "test_addon_combinations[addons_config2-7-210.00]",
+        "parametrize",
+        "pytestmark",
+        "addons_config2-7-210.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023470800078939646,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011549999908311293,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011391599946364295,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_addon_combinations[addons_config3-3-0.00]",
+      "lineno": 268,
+      "outcome": "passed",
+      "keywords": [
+        "test_addon_combinations[addons_config3-3-0.00]",
+        "parametrize",
+        "pytestmark",
+        "addons_config3-3-0.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00023541700102214236,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 9.949999912350904e-05,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011020800047845114,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[Basic-10.00-3-30.00]",
+      "lineno": 315,
+      "outcome": "passed",
+      "keywords": [
+        "test_insurance_tier_combinations[Basic-10.00-3-30.00]",
+        "parametrize",
+        "pytestmark",
+        "Basic-10.00-3-30.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00025466700026299804,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010929200107057113,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010875000043597538,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[Premium-25.00-5-125.00]",
+      "lineno": 315,
+      "outcome": "passed",
+      "keywords": [
+        "test_insurance_tier_combinations[Premium-25.00-5-125.00]",
+        "parametrize",
+        "pytestmark",
+        "Premium-25.00-5-125.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002517909997550305,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010666600064723752,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011545800043677446,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[FullCoverage-40.00-7-280.00]",
+      "lineno": 315,
+      "outcome": "passed",
+      "keywords": [
+        "test_insurance_tier_combinations[FullCoverage-40.00-7-280.00]",
+        "parametrize",
+        "pytestmark",
+        "FullCoverage-40.00-7-280.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002548339998611482,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.0001021250009216601,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00011016600001312327,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::test_insurance_tier_combinations[None-None-3-0.00]",
+      "lineno": 315,
+      "outcome": "passed",
+      "keywords": [
+        "test_insurance_tier_combinations[None-None-3-0.00]",
+        "parametrize",
+        "pytestmark",
+        "None-None-3-0.00",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002487920010025846,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 9.908399988489691e-05,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010929200107057113,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_weekend_surcharge_saturday_pickup",
+      "lineno": 362,
+      "outcome": "passed",
+      "keywords": [
+        "test_weekend_surcharge_saturday_pickup",
+        "TestDynamicFactors",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017779200061340816,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011962499957007822,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010366700007580221,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_no_weekend_surcharge_weekday",
+      "lineno": 396,
+      "outcome": "passed",
+      "keywords": [
+        "test_no_weekend_surcharge_weekday",
+        "TestDynamicFactors",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00018199999976786785,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010116600060428027,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.754200073075481e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_peak_season_surcharge",
+      "lineno": 428,
+      "outcome": "passed",
+      "keywords": [
+        "test_peak_season_surcharge",
+        "TestDynamicFactors",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017608400048629846,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011116700079583097,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.570799920766149e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestDynamicFactors::test_no_peak_season_surcharge_off_season",
+      "lineno": 461,
+      "outcome": "passed",
+      "keywords": [
+        "test_no_peak_season_surcharge_off_season",
+        "TestDynamicFactors",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017620800099393819,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010141700113308616,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.841700011747889e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestLateFeeCalculation::test_late_fee_beyond_grace_period",
+      "lineno": 497,
+      "outcome": "passed",
+      "keywords": [
+        "test_late_fee_beyond_grace_period",
+        "TestLateFeeCalculation",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017883299915411044,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00011916699986613821,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.649999992689118e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestLateFeeCalculation::test_no_late_fee_within_grace_period",
+      "lineno": 532,
+      "outcome": "passed",
+      "keywords": [
+        "test_no_late_fee_within_grace_period",
+        "TestLateFeeCalculation",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017704200035950635,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.0001053750002029119,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.541700092086103e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_mileage_overage_charge",
+      "lineno": 569,
+      "outcome": "passed",
+      "keywords": [
+        "test_mileage_overage_charge",
+        "TestMileageAndFuelCharges",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017879199913295452,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010966599984385539,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.741699977894314e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_no_mileage_overage_within_allowance",
+      "lineno": 603,
+      "outcome": "passed",
+      "keywords": [
+        "test_no_mileage_overage_within_allowance",
+        "TestMileageAndFuelCharges",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017537499843456317,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010933300109172706,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.829199916566722e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_fuel_refill_charge",
+      "lineno": 635,
+      "outcome": "passed",
+      "keywords": [
+        "test_fuel_refill_charge",
+        "TestMileageAndFuelCharges",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.00017699999989417847,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00010791699969558977,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.0001005000012810342,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestMileageAndFuelCharges::test_no_fuel_charge_same_or_higher_level",
+      "lineno": 667,
+      "outcome": "passed",
+      "keywords": [
+        "test_no_fuel_charge_same_or_higher_level",
+        "TestMileageAndFuelCharges",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0001747919995978009,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 9.904199941956904e-05,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 9.87089988484513e-05,
+        "outcome": "passed"
+      }
+    },
+    {
+      "nodeid": "tests/test_pricing.py::TestCompletePricingPolicy::test_complete_pricing_all_charges",
+      "lineno": 703,
+      "outcome": "passed",
+      "keywords": [
+        "test_complete_pricing_all_charges",
+        "TestCompletePricingPolicy",
+        "test_pricing.py",
+        "tests/__init__.py",
+        "Car-Rental-Fleet-Maintenance-System-main"
+      ],
+      "setup": {
+        "duration": 0.0002086669992422685,
+        "outcome": "passed"
+      },
+      "call": {
+        "duration": 0.00017483299961895682,
+        "outcome": "passed"
+      },
+      "teardown": {
+        "duration": 0.00010616599865898024,
+        "outcome": "passed"
+      }
+    }
+  ]
+}

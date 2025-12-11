@@ -1,0 +1,75 @@
+# UML Sınıf Diyagramı Açıklaması
+
+## Temel Sınıflar ve İlişkiler
+
+1. **Customer**
+   - Özellikler: `id`, `name`, `email`, `phone`
+   - İlişkiler: Rezervasyonları (`Reservation`) tutar.
+
+2. **Agent**
+   - Özellikler: `id`, `name`, `branch`
+   - İlişkiler: Araç teslim alma ve iade işlemlerini yönetir.
+
+3. **Vehicle**
+   - Özellikler: `id`, `class`, `location`, `status`, `odometer`, `fuel_level`
+   - İlişkiler: Bir `VehicleClass` ve `Location` ile ilişkilidir.
+
+4. **VehicleClass**
+   - Özellikler: `name`, `base_rate`
+   - İlişkiler: Araç sınıflarını tanımlar.
+
+5. **Location**
+   - Özellikler: `id`, `name`, `address`
+   - İlişkiler: Araçların bulunduğu yerleri tanımlar.
+
+6. **Reservation**
+   - Özellikler: `id`, `customer`, `vehicle_class`, `pickup_time`, `return_time`, `addons`, `insurance_tier`, `deposit`
+   - İlişkiler: Bir `Customer` ve `VehicleClass` ile ilişkilidir.
+
+7. **RentalAgreement**
+   - Özellikler: `id`, `reservation`, `vehicle`, `start_odometer`, `start_fuel_level`, `end_odometer`, `end_fuel_level`, `charges`
+   - İlişkiler: Bir `Reservation` ve `Vehicle` ile ilişkilidir.
+
+8. **AddOn**
+   - Özellikler: `name`, `daily_fee`
+   - İlişkiler: Rezervasyonlara eklenebilir.
+
+9. **InsuranceTier**
+   - Özellikler: `name`, `daily_fee`
+   - İlişkiler: Rezervasyonlara eklenebilir.
+
+10. **MaintenanceRecord**
+    - Özellikler: `id`, `vehicle`, `service_type`, `odometer_threshold`, `time_threshold`
+    - İlişkiler: Bir `Vehicle` ile ilişkilidir.
+
+11. **PricingPolicy** (Strategy Pattern)
+    - Metotlar: `calculate_charges`
+    - İlişkiler: Fiyatlandırma kurallarını uygular.
+
+12. **ChargeItem** (Value Object)
+    - Özellikler: `description`, `amount`
+
+13. **Invoice**
+    - Özellikler: `id`, `rental_agreement`, `total_amount`, `status`
+
+14. **Payment**
+    - Özellikler: `id`, `invoice`, `status`
+
+15. **Notification**
+    - Özellikler: `type`, `message`
+
+16. **Clock**
+    - Metotlar: `now()`
+    - Açıklama: Test edilebilir saat arayüzü.
+
+## İlişkiler
+- `Customer` -> `Reservation` (1:N)
+- `Reservation` -> `VehicleClass` (N:1)
+- `Reservation` -> `RentalAgreement` (1:1)
+- `RentalAgreement` -> `Vehicle` (1:1)
+- `Vehicle` -> `Location` (N:1)
+- `Vehicle` -> `MaintenanceRecord` (1:N)
+- `PricingPolicy` -> `ChargeItem` (N:1)
+- `Invoice` -> `RentalAgreement` (1:1)
+- `Invoice` -> `Payment` (1:N)
+- `Notification` bağımsızdır.

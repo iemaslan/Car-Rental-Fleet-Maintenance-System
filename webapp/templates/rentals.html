@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}CRFMS - Rental Agreements{% endblock %}
+
+{% block header_title %}📋 Rental Agreements{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2>All Rental Agreements</h2>
+    
+    {% if rentals %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Pickup</th>
+                <th>Due Return</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rentals %}
+            <tr>
+                <td><strong>#{{ rental.id }}</strong></td>
+                <td>{{ rental.reservation.customer.name }}</td>
+                <td>{{ rental.vehicle.vehicle_class.name }} (#{{ rental.vehicle.id }})</td>
+                <td>{{ rental.pickup_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ rental.expected_return_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {% if rental.actual_return_time %}
+                        <span class="status-badge badge-info">Completed</span>
+                    {% elif rental.is_overdue() %}
+                        <span class="status-badge badge-danger">Overdue</span>
+                    {% else %}
+                        <span class="status-badge badge-success">Active</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/rentals/{{ rental.id }}" class="btn" style="padding: 5px 15px; font-size: 12px;">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <h3>No Rental Agreements</h3>
+        <p>No active or completed rentals</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
