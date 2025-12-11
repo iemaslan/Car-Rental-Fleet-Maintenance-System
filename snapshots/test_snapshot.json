@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "timestamp": "2025-12-11T23:43:21.916466",
+    "description": "CRFMS Test Snapshot"
+  },
+  "customers": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@email.com",
+      "phone": "+1-555-0101"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@email.com",
+      "phone": "+1-555-0102"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 1,
+      "vehicle_class": {
+        "name": "SEDAN",
+        "base_rate": 50.0,
+        "daily_mileage_allowance": 120
+      },
+      "location": {
+        "id": 1,
+        "name": "Downtown",
+        "address": "123 Main St"
+      },
+      "status": "AVAILABLE",
+      "odometer": 35000,
+      "fuel_level": "FULL"
+    },
+    {
+      "id": 2,
+      "vehicle_class": {
+        "name": "SUV",
+        "base_rate": 75.0,
+        "daily_mileage_allowance": 150
+      },
+      "location": {
+        "id": 2,
+        "name": "Airport",
+        "address": "456 Airport Rd"
+      },
+      "status": "RENTED",
+      "odometer": 45000,
+      "fuel_level": "THREE_QUARTERS"
+    }
+  ],
+  "rentals": [
+    {
+      "id": 1,
+      "customer_id": 1,
+      "vehicle_id": 2,
+      "start_odometer": 45000,
+      "end_odometer": null,
+      "status": "ACTIVE"
+    }
+  ]
+}

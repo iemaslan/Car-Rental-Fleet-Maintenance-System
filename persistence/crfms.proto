@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+package crfms;
+
+// Basic value objects
+message Money {
+    double amount = 1;
+    string currency = 2;
+}
+
+message Kilometers {
+    int32 value = 1;
+}
+
+message FuelLevel {
+    string level = 1;  // FULL, THREE_QUARTERS, HALF, QUARTER, EMPTY
+}
+
+// Domain entities
+
+message Customer {
+    int32 id = 1;
+    string name = 2;
+    string email = 3;
+    string phone = 4;
+}
+
+message VehicleClass {
+    string name = 1;
+    Money base_rate = 2;
+    int32 daily_mileage_allowance = 3;
+}
+
+message Location {
+    int32 id = 1;
+    string name = 2;
+    string address = 3;
+}
+
+message Vehicle {
+    int32 id = 1;
+    VehicleClass vehicle_class = 2;
+    Location location = 3;
+    string status = 4;  // AVAILABLE, RENTED, OUT_OF_SERVICE, CLEANING
+    Kilometers odometer = 5;
+    FuelLevel fuel_level = 6;
+}
+
+message Reservation {
+    int32 id = 1;
+    int32 customer_id = 2;
+    string vehicle_class_name = 3;
+    int32 location_id = 4;
+    string pickup_time = 5;  // ISO format timestamp
+    string return_time = 6;  // ISO format timestamp
+}
+
+message ChargeItem {
+    string description = 1;
+    Money amount = 2;
+}
+
+message RentalAgreement {
+    int32 id = 1;
+    int32 reservation_id = 2;
+    int32 vehicle_id = 3;
+    string pickup_token = 4;
+    Kilometers start_odometer = 5;
+    Kilometers end_odometer = 6;
+    FuelLevel start_fuel_level = 7;
+    FuelLevel end_fuel_level = 8;
+    string pickup_time = 9;  // ISO format
+    string expected_return_time = 10;  // ISO format
+    string actual_return_time = 11;  // ISO format (optional)
+    repeated ChargeItem charge_items = 12;
+}
+
+message MaintenanceRecord {
+    int32 id = 1;
+    int32 vehicle_id = 2;
+    string service_type = 3;
+    Kilometers odometer_threshold = 4;
+    string time_threshold = 5;  // ISO format (optional)
+    string last_service_date = 6;  // ISO format (optional)
+    Kilometers last_service_odometer = 7;  // optional
+}
+
+message Invoice {
+    int32 id = 1;
+    int32 rental_agreement_id = 2;
+    repeated ChargeItem charge_items = 3;
+    Money total_amount = 4;
+    string status = 5;
+    string created_at = 6;  // ISO format
+}
+
+message Payment {
+    int32 id = 1;
+    int32 invoice_id = 2;
+    Money amount = 3;
+    string status = 4;
+    string timestamp = 5;  // ISO format
+}
+
+message Notification {
+    string type = 1;
+    string recipient = 2;
+    string message = 3;
+    string timestamp = 4;  // ISO format
+}
+
+message AuditEntry {
+    string id = 1;
+    string timestamp = 2;  // ISO format
+    string event_type = 3;
+    string actor_type = 4;
+    string actor_id = 5;
+    string actor_name = 6;
+    string entity_type = 7;
+    string entity_id = 8;
+    string description = 9;
+    map<string, string> metadata = 10;
+}
+
+// Root snapshot message
+message CrfmsSnapshot {
+    message Metadata {
+        string version = 1;
+        string timestamp = 2;
+        string description = 3;
+    }
+    
+    Metadata metadata = 1;
+    repeated Customer customers = 2;
+    repeated Vehicle vehicles = 3;
+    repeated Reservation reservations = 4;
+    repeated RentalAgreement rental_agreements = 5;
+    repeated MaintenanceRecord maintenance_records = 6;
+    repeated Invoice invoices = 7;
+    repeated Payment payments = 8;
+    repeated Notification notifications = 9;
+    repeated AuditEntry audit_entries = 10;
+}
