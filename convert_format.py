@@ -14,10 +14,26 @@ from pathlib import Path
 
 from persistence import crfms_pb2
 
+# ANSI color codes for terminal output
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+def colored_print(message: str, color: str = Colors.ENDC) -> None:
+    """Print colored message to terminal."""
+    print(f"{color}{message}{Colors.ENDC}")
+
 
 def json_to_proto(json_file: str, proto_file: str) -> None:
     """Convert JSON snapshot to Protocol Buffers format."""
-    print(f"Converting {json_file} (JSON) → {proto_file} (Protobuf)...")
+    colored_print(f"\n🔄 Converting {json_file} (JSON) → {proto_file} (Protobuf)...", Colors.OKCYAN)
     
     try:
         # Load JSON
@@ -162,22 +178,30 @@ def json_to_proto(json_file: str, proto_file: str) -> None:
         with open(proto_file, 'wb') as f:
             f.write(snapshot.SerializeToString())
         
-        print(f"✓ Successfully converted to Protobuf")
+        # Get file sizes
+        json_size = Path(json_file).stat().st_size
+        proto_size = Path(proto_file).stat().st_size
+        savings = ((json_size - proto_size) / json_size * 100) if json_size > 0 else 0
+        
+        colored_print(f"✓ Successfully converted to Protobuf", Colors.OKGREEN)
+        colored_print(f"  JSON size:  {json_size:,} bytes", Colors.ENDC)
+        colored_print(f"  Proto size: {proto_size:,} bytes", Colors.ENDC)
+        colored_print(f"  Savings:    {savings:.1f}%", Colors.OKGREEN)
         
     except FileNotFoundError:
-        print(f"✗ Error: Input file '{json_file}' not found", file=sys.stderr)
+        colored_print(f"✗ Error: Input file '{json_file}' not found", Colors.FAIL)
         sys.exit(1)
     except json.JSONDecodeError as e:
-        print(f"✗ Error: Invalid JSON file: {e}", file=sys.stderr)
+        colored_print(f"✗ Error: Invalid JSON file: {e}", Colors.FAIL)
         sys.exit(1)
     except Exception as e:
-        print(f"✗ Error during conversion: {e}", file=sys.stderr)
+        colored_print(f"✗ Error during conversion: {e}", Colors.FAIL)
         sys.exit(1)
 
 
 def proto_to_json(proto_file: str, json_file: str) -> None:
     """Convert Protocol Buffers snapshot to JSON format."""
-    print(f"Converting {proto_file} (Protobuf) → {json_file} (JSON)...")
+    colored_print(f"\n🔄 Converting {proto_file} (Protobuf) → {json_file} (JSON)...", Colors.OKCYAN)
     
     try:
         # Load protobuf
@@ -334,17 +358,29 @@ def proto_to_json(proto_file: str, json_file: str) -> None:
         with open(json_file, 'wt', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"✓ Successfully converted to JSON")
+        # Get file sizes
+        proto_size = Path(proto_file).stat().st_size
+        json_size = Path(json_file).stat().st_size
+        expansion = ((json_size - proto_size) / proto_size * 100) if proto_size > 0 else 0
+        
+        colored_print(f"✓ Successfully converted to JSON", Colors.OKGREEN)
+        colored_print(f"  Proto size: {proto_size:,} bytes", Colors.ENDC)
+        colored_print(f"  JSON size:  {json_size:,} bytes", Colors.ENDC)
+        colored_print(f"  Expansion:  {expansion:.1f}%", Colors.WARNING)
         
     except FileNotFoundError:
-        print(f"✗ Error: Input file '{proto_file}' not found", file=sys.stderr)
+        colored_print(f"✗ Error: Input file '{proto_file}' not found", Colors.FAIL)
         sys.exit(1)
     except Exception as e:
-        print(f"✗ Error during conversion: {e}", file=sys.stderr)
+        colored_print(f"✗ Error during conversion: {e}", Colors.FAIL)
         sys.exit(1)
 
 
 def main():
+    colored_print("\n" + "="*70, Colors.BOLD)
+    colored_print("  CRFMS Format Converter - JSON ↔ Protocol Buffers", Colors.HEADER + Colors.BOLD)
+    colored_print("="*70 + "\n", Colors.BOLD)
+    
     parser = argparse.ArgumentParser(
         description='Convert CRFMS snapshots between JSON and Protocol Buffers formats',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -368,6 +404,10 @@ Examples:
         json_to_proto(args.input, args.output)
     else:
         proto_to_json(args.input, args.output)
+    
+    colored_print("\n" + "="*70, Colors.BOLD)
+    colored_print("  Conversion completed successfully! ✨", Colors.OKGREEN + Colors.BOLD)
+    colored_print("="*70 + "\n", Colors.BOLD)
 
 
 if __name__ == '__main__':

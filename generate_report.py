@@ -85,7 +85,7 @@ def load_proto_snapshot(filename: str) -> dict:
             for p in snapshot.payments
         ],
         'notifications': [
-            {'id': n.id, 'type': n.type, 'sent': n.sent}
+            {'type': n.type, 'recipient': n.recipient}
             for n in snapshot.notifications
         ]
     }
@@ -229,6 +229,138 @@ def generate_report(data: dict) -> None:
     print(f"   Total Notifications: {len(notifications)}")
     print(f"   Sent: {sent_count}")
     print(f"   Pending: {pending_count}")
+    print()
+    
+    # Advanced Analytics
+    print("=" * 70)
+    print("📈 ADVANCED ANALYTICS")
+    print("=" * 70)
+    print()
+    
+    # 1. Most Profitable Vehicle Class
+    print("💰 MOST PROFITABLE VEHICLE CLASS")
+    revenue_by_class = defaultdict(float)
+    rental_count_by_class = defaultdict(int)
+    
+    for rental in rentals:
+        vehicle_id = rental.get('vehicle_id')
+        # Find vehicle class for this rental
+        vehicle_class = None
+        for vehicle in vehicles:
+            if vehicle.get('id') == vehicle_id:
+                vehicle_class = vehicle.get('vehicle_class', {}).get('name')
+                break
+        
+        if vehicle_class:
+            rental_revenue = sum(item.get('amount', 0) for item in rental.get('charge_items', []))
+            revenue_by_class[vehicle_class] += rental_revenue
+            rental_count_by_class[vehicle_class] += 1
+    
+    if revenue_by_class:
+        sorted_classes = sorted(revenue_by_class.items(), key=lambda x: x[1], reverse=True)
+        print(f"   Top 3 Vehicle Classes by Revenue:")
+        for i, (class_name, revenue) in enumerate(sorted_classes[:3], 1):
+            count = rental_count_by_class[class_name]
+            avg_revenue = revenue / count if count > 0 else 0
+            print(f"      {i}. {class_name}: ${revenue:,.2f} ({count} rentals, avg ${avg_revenue:,.2f})")
+    else:
+        print("   No revenue data available")
+    print()
+    
+    # 2. Customer Loyalty Analysis
+    print("🏆 CUSTOMER LOYALTY ANALYSIS")
+    customer_spending = defaultdict(float)
+    customer_rental_count = defaultdict(int)
+    
+    for reservation in reservations:
+        customer_id = reservation.get('customer_id')
+        # Find rentals for this reservation
+        for rental in rentals:
+            if rental.get('reservation_id') == reservation.get('id'):
+                rental_revenue = sum(item.get('amount', 0) for item in rental.get('charge_items', []))
+                customer_spending[customer_id] += rental_revenue
+                customer_rental_count[customer_id] += 1
+    
+    if customer_spending:
+        sorted_customers = sorted(customer_spending.items(), key=lambda x: x[1], reverse=True)
+        print(f"   Top 5 Customers by Total Spending:")
+        for i, (customer_id, spending) in enumerate(sorted_customers[:5], 1):
+            # Find customer name
+            customer_name = "Unknown"
+            for customer in customers:
+                if customer.get('id') == customer_id:
+                    customer_name = customer.get('name', 'Unknown')
+                    break
+            
+            rental_count = customer_rental_count[customer_id]
+            avg_spending = spending / rental_count if rental_count > 0 else 0
+            print(f"      {i}. {customer_name}: ${spending:,.2f} ({rental_count} rentals, avg ${avg_spending:,.2f})")
+    else:
+        print("   No customer spending data available")
+    print()
+    
+    # 3. Maintenance Cost Estimates
+    print("🔧 MAINTENANCE COST ESTIMATES")
+    # Average cost estimates by service type
+    maintenance_costs = {
+        'OIL_CHANGE': 75.00,
+        'TIRE_ROTATION': 50.00,
+        'BRAKE_SERVICE': 250.00,
+        'INSPECTION': 100.00,
+        'ENGINE_REPAIR': 500.00,
+        'TRANSMISSION': 800.00,
+        'UNKNOWN': 150.00
+    }
+    
+    total_maintenance_cost = 0
+    maintenance_cost_by_type = defaultdict(float)
+    
+    for record in maintenance:
+        service_type = record.get('service_type', 'UNKNOWN')
+        cost = maintenance_costs.get(service_type, 150.00)
+        total_maintenance_cost += cost
+        maintenance_cost_by_type[service_type] += cost
+    
+    print(f"   Estimated Total Maintenance Cost: ${total_maintenance_cost:,.2f}")
+    if maintenance:
+        print(f"   Average Cost per Maintenance: ${total_maintenance_cost / len(maintenance):,.2f}")
+    
+    if maintenance_cost_by_type:
+        print(f"   Maintenance Costs by Service Type:")
+        for service_type, cost in sorted(maintenance_cost_by_type.items(), key=lambda x: x[1], reverse=True):
+            count = maintenance_by_type[service_type]
+            print(f"      • {service_type}: ${cost:,.2f} ({count} services)")
+    print()
+    
+    # 4. Fleet Utilization Rate
+    print("📊 FLEET UTILIZATION")
+    if vehicles:
+        rented_vehicles = sum(1 for v in vehicles if v.get('status') == 'RENTED')
+        available_vehicles = sum(1 for v in vehicles if v.get('status') == 'AVAILABLE')
+        utilization_rate = (rented_vehicles / len(vehicles)) * 100
+        print(f"   Total Fleet Size: {len(vehicles)}")
+        print(f"   Currently Rented: {rented_vehicles}")
+        print(f"   Available: {available_vehicles}")
+        print(f"   Utilization Rate: {utilization_rate:.1f}%")
+    else:
+        print("   No fleet data available")
+    print()
+    
+    # 5. Revenue Metrics
+    print("💵 REVENUE METRICS")
+    if total_rental_revenue > 0:
+        print(f"   Total Rental Revenue: ${total_rental_revenue:,.2f}")
+        print(f"   Total Maintenance Cost: ${total_maintenance_cost:,.2f}")
+        net_revenue = total_rental_revenue - total_maintenance_cost
+        profit_margin = (net_revenue / total_rental_revenue) * 100 if total_rental_revenue > 0 else 0
+        print(f"   Net Revenue (Est.): ${net_revenue:,.2f}")
+        print(f"   Profit Margin (Est.): {profit_margin:.1f}%")
+        
+        if vehicles:
+            revenue_per_vehicle = total_rental_revenue / len(vehicles)
+            print(f"   Revenue per Vehicle: ${revenue_per_vehicle:,.2f}")
+    else:
+        print("   No revenue data available")
     print()
     
     print("=" * 70)

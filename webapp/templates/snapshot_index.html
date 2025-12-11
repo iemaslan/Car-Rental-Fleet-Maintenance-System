@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW3 Snapshot Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .file-item h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .file-item p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .button:hover {
+            transform: scale(1.05);
+        }
+        
+        .compare-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 HW3 Snapshot Viewer</h1>
+            <p>File Operations & Protocol Buffers - Interactive Data Browser</p>
+        </div>
+        
+        <div class="card">
+            <h2>📄 JSON Snapshots</h2>
+            {% if json_files %}
+                <div class="file-grid">
+                    {% for file in json_files %}
+                    <a href="{{ url_for('view_snapshot', file_type='json', filename=file) }}" class="file-item">
+                        <h3>{{ file }}</h3>
+                        <p>Human-readable text format</p>
+                        <span class="badge">JSON</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No JSON snapshot files found</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Run test_hw3.py to generate snapshots</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>🔧 Protocol Buffers Snapshots</h2>
+            {% if proto_files %}
+                <div class="file-grid">
+                    {% for file in proto_files %}
+                    <a href="{{ url_for('view_snapshot', file_type='proto', filename=file) }}" class="file-item">
+                        <h3>{{ file }}</h3>
+                        <p>Compact binary format</p>
+                        <span class="badge">PROTOBUF</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No Protobuf snapshot files found</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Run test_hw3.py to generate snapshots</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if json_files or proto_files %}
+        <div class="compare-link">
+            <a href="{{ url_for('compare_snapshots') }}" class="button">📊 Compare File Sizes</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

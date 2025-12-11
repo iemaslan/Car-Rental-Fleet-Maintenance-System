@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ filename }} - Snapshot Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header .meta {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        /* Search and Filter Styles */
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Chart containers */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .chart-canvas {
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">← Back to Snapshot List</a>
+            <h1>📊 {{ filename }}</h1>
+            <div class="meta">
+                {% if data.metadata %}
+                    Version: {{ data.metadata.version }} | 
+                    Timestamp: {{ data.metadata.timestamp }}
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>🚗 Fleet Status Distribution</h3>
+                <canvas id="fleetStatusChart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Vehicle Classes</h3>
+                <canvas id="vehicleClassChart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>💰 Revenue by Vehicle Class</h3>
+                <canvas id="revenueChart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📅 Rental Status</h3>
+                <canvas id="rentalStatusChart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{{ url_for('index') }}" class="back-link">← Back to File List</a>
+            <h1>{{ filename }}</h1>
+            <div class="meta">
+                <strong>Format:</strong> {{ file_type }} | 
+                <strong>Timestamp:</strong> {{ data.metadata.timestamp }}
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value">{{ stats.total_customers }}</div>
+                <div class="label">Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">{{ stats.total_vehicles }}</div>
+                <div class="label">Vehicles</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">{{ stats.total_reservations }}</div>
+                <div class="label">Reservations</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">{{ stats.active_rentals }}</div>
+                <div class="label">Active Rentals</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">${{ "%.2f"|format(stats.total_revenue) }}</div>
+                <div class="label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">{{ stats.total_notifications }}</div>
+                <div class="label">Notifications</div>
+            </div>
+        </div>
+        
+        <!-- Customers Section -->
+        <div class="section">
+            <h2>👥 Customers ({{ data.customers|length }})</h2>
+            <div class="controls">
+                <input type="text" id="customerSearch" class="search-box" placeholder="🔍 Search customers by name, email...">
+                <button class="btn" onclick="clearCustomerSearch()">Clear</button>
+            </div>
+            {% if data.customers %}
+            <table id="customersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in data.customers %}
+                    <tr>
+                        <td>{{ customer.id }}</td>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.phone }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No customers found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Vehicles Section -->
+        <div class="section">
+            <h2>🚗 Vehicles ({{ data.vehicles|length }})</h2>
+            <div class="controls">
+                <input type="text" id="vehicleSearch" class="search-box" placeholder="🔍 Search vehicles by class, location...">
+                <select id="statusFilter" class="filter-select" onchange="filterVehicles()">
+                    <option value="">All Statuses</option>
+                    <option value="AVAILABLE">Available</option>
+                    <option value="RENTED">Rented</option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                </select>
+                <button class="btn" onclick="clearVehicleFilters()">Clear</button>
+            </div>
+            {% if data.vehicles %}
+            <table id="vehiclesTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Class</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Odometer</th>
+                        <th>Fuel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vehicle in data.vehicles %}
+                    <tr>
+                        <td>{{ vehicle.id }}</td>
+                        <td>{{ vehicle.vehicle_class if vehicle.vehicle_class is string else vehicle.vehicle_class.name }}</td>
+                        <td>{{ vehicle.location if vehicle.location is string else vehicle.location.name }}</td>
+                        <td>
+                            {% if vehicle.status == 'AVAILABLE' %}
+                                <span class="badge badge-success">{{ vehicle.status }}</span>
+                            {% elif vehicle.status == 'RENTED' %}
+                                <span class="badge badge-warning">{{ vehicle.status }}</span>
+                            {% else %}
+                                <span class="badge badge-danger">{{ vehicle.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ vehicle.odometer }} km</td>
+                        <td>{{ vehicle.fuel_level }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No vehicles found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Reservations Section -->
+        <div class="section">
+            <h2>📅 Reservations ({{ data.reservations|length }})</h2>
+            {% if data.reservations %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Vehicle Class</th>
+                        <th>Pickup Time</th>
+                        <th>Return Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in data.reservations %}
+                    <tr>
+                        <td>{{ reservation.id }}</td>
+                        <td>#{{ reservation.customer_id }}</td>
+                        <td>{{ reservation.vehicle_class_name }}</td>
+                        <td>{{ reservation.pickup_time[:16] }}</td>
+                        <td>{{ reservation.return_time[:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No reservations found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Rental Agreements Section -->
+        <div class="section">
+            <h2>🔑 Rental Agreements ({{ data.rental_agreements|length }})</h2>
+            {% if data.rental_agreements %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Vehicle</th>
+                        <th>Token</th>
+                        <th>Pickup Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rental in data.rental_agreements %}
+                    <tr>
+                        <td>{{ rental.id }}</td>
+                        <td>#{{ rental.vehicle_id }}</td>
+                        <td>{{ rental.pickup_token }}</td>
+                        <td>{{ rental.pickup_time[:16] }}</td>
+                        <td>
+                            {% if rental.actual_return_time %}
+                                <span class="badge badge-success">COMPLETED</span>
+                            {% else %}
+                                <span class="badge badge-warning">ACTIVE</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No rental agreements found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Invoices Section -->
+        <div class="section">
+            <h2>💰 Invoices ({{ data.invoices|length }})</h2>
+            {% if data.invoices %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Rental Agreement</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in data.invoices %}
+                    <tr>
+                        <td>{{ invoice.id }}</td>
+                        <td>#{{ invoice.rental_agreement_id }}</td>
+                        <td>${{ "%.2f"|format(invoice.total_amount) }}</td>
+                        <td>
+                            {% if invoice.status == 'PAID' %}
+                                <span class="badge badge-success">{{ invoice.status }}</span>
+                            {% else %}
+                                <span class="badge badge-warning">{{ invoice.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ invoice.created_at[:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No invoices found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Payments Section -->
+        <div class="section">
+            <h2>💳 Payments ({{ data.payments|length }})</h2>
+            {% if data.payments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Invoice</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in data.payments %}
+                    <tr>
+                        <td>{{ payment.id }}</td>
+                        <td>#{{ payment.invoice_id }}</td>
+                        <td>${{ "%.2f"|format(payment.amount) }}</td>
+                        <td>
+                            {% if payment.status == 'COMPLETED' %}
+                                <span class="badge badge-success">{{ payment.status }}</span>
+                            {% else %}
+                                <span class="badge badge-info">{{ payment.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ payment.timestamp[:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No payments found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Notifications Section -->
+        <div class="section">
+            <h2>🔔 Notifications ({{ data.notifications|length }})</h2>
+            {% if data.notifications %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Recipient</th>
+                        <th>Message</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notification in data.notifications %}
+                    <tr>
+                        <td><span class="badge badge-info">{{ notification.type }}</span></td>
+                        <td>{{ notification.recipient }}</td>
+                        <td>{{ notification.message }}</td>
+                        <td>{{ notification.timestamp[:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No notifications found</div>
+            {% endif %}
+        </div>
+        
+        <!-- Maintenance Records Section -->
+        <div class="section">
+            <h2>🔧 Maintenance Records ({{ data.maintenance_records|length }})</h2>
+            {% if data.maintenance_records %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Vehicle</th>
+                        <th>Service Type</th>
+                        <th>Odometer Threshold</th>
+                        <th>Last Service</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for maintenance in data.maintenance_records %}
+                    <tr>
+                        <td>{{ maintenance.id }}</td>
+                        <td>#{{ maintenance.vehicle_id }}</td>
+                        <td><span class="badge badge-info">{{ maintenance.service_type }}</span></td>
+                        <td>{{ maintenance.odometer_threshold }} km</td>
+                        <td>{{ maintenance.last_service_date[:10] if maintenance.last_service_date else 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No maintenance records found</div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+        // Chart.js configuration
+        const chartColors = {
+            purple: 'rgba(102, 126, 234, 0.8)',
+            violet: 'rgba(118, 75, 162, 0.8)',
+            green: 'rgba(75, 192, 192, 0.8)',
+            red: 'rgba(255, 99, 132, 0.8)',
+            yellow: 'rgba(255, 205, 86, 0.8)',
+            blue: 'rgba(54, 162, 235, 0.8)',
+            orange: 'rgba(255, 159, 64, 0.8)'
+        };
+        
+        // Fleet Status Chart
+        {% if data.vehicles %}
+        const vehicleStatuses = {};
+        {% for vehicle in data.vehicles %}
+        const status{{ loop.index }} = '{{ vehicle.status }}';
+        vehicleStatuses[status{{ loop.index }}] = (vehicleStatuses[status{{ loop.index }}] || 0) + 1;
+        {% endfor %}
+        
+        new Chart(document.getElementById('fleetStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(vehicleStatuses),
+                datasets: [{
+                    data: Object.values(vehicleStatuses),
+                    backgroundColor: [chartColors.green, chartColors.red, chartColors.yellow, chartColors.blue]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        {% endif %}
+        
+        // Vehicle Class Chart
+        {% if data.vehicles %}
+        const vehicleClasses = {};
+        {% for vehicle in data.vehicles %}
+        const className{{ loop.index }} = '{{ vehicle.vehicle_class.name }}';
+        vehicleClasses[className{{ loop.index }}] = (vehicleClasses[className{{ loop.index }}] || 0) + 1;
+        {% endfor %}
+        
+        new Chart(document.getElementById('vehicleClassChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(vehicleClasses),
+                datasets: [{
+                    label: 'Number of Vehicles',
+                    data: Object.values(vehicleClasses),
+                    backgroundColor: chartColors.purple
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+        {% endif %}
+        
+        // Revenue by Vehicle Class Chart
+        {% if data.rental_agreements and data.vehicles %}
+        const revenueByClass = {};
+        {% for rental in data.rental_agreements %}
+            {% for vehicle in data.vehicles %}
+                {% if vehicle.id == rental.vehicle_id %}
+                    const revClassName{{ loop.index }} = '{{ vehicle.vehicle_class.name }}';
+                    const revenue{{ loop.index }} = {{ rental.charge_items | sum(attribute='amount') }};
+                    revenueByClass[revClassName{{ loop.index }}] = (revenueByClass[revClassName{{ loop.index }}] || 0) + revenue{{ loop.index }};
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(revenueByClass),
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: Object.values(revenueByClass),
+                    backgroundColor: chartColors.green
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+        {% endif %}
+        
+        // Rental Status Chart
+        {% if data.rental_agreements %}
+        const activeRentals = {{ data.rental_agreements | selectattr('actual_return_time', 'none') | list | length }};
+        const completedRentals = {{ data.rental_agreements | rejectattr('actual_return_time', 'none') | list | length }};
+        
+        new Chart(document.getElementById('rentalStatusChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Active', 'Completed'],
+                datasets: [{
+                    data: [activeRentals, completedRentals],
+                    backgroundColor: [chartColors.red, chartColors.green]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        {% endif %}
+        
+        // Search and Filter functionality
+        const customerData = {{ data.customers | tojson | safe }};
+        const vehicleData = {{ data.vehicles | tojson | safe }};
+        
+        // Customer search
+        document.getElementById('customerSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tbody = document.querySelector('#customersTable tbody');
+            tbody.innerHTML = '';
+            
+            customerData.filter(customer => 
+                customer.name.toLowerCase().includes(searchTerm) ||
+                customer.email.toLowerCase().includes(searchTerm) ||
+                (customer.phone && customer.phone.includes(searchTerm))
+            ).forEach(customer => {
+                const row = `<tr>
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone || 'N/A'}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        });
+        
+        // Vehicle search and filter
+        function filterVehicles() {
+            const searchTerm = document.getElementById('vehicleSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const tbody = document.querySelector('#vehiclesTable tbody');
+            tbody.innerHTML = '';
+            
+            vehicleData.filter(vehicle => {
+                const matchesSearch = vehicle.vehicle_class.name.toLowerCase().includes(searchTerm) ||
+                                     (vehicle.location && vehicle.location.name.toLowerCase().includes(searchTerm));
+                const matchesStatus = !statusFilter || vehicle.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            }).forEach(vehicle => {
+                const statusClass = {
+                    'AVAILABLE': 'badge-success',
+                    'RENTED': 'badge-danger',
+                    'MAINTENANCE': 'badge-warning'
+                }[vehicle.status] || 'badge-info';
+                
+                const row = `<tr>
+                    <td>${vehicle.id}</td>
+                    <td>${vehicle.vehicle_class.name}</td>
+                    <td>${vehicle.location ? vehicle.location.name : 'N/A'}</td>
+                    <td><span class="badge ${statusClass}">${vehicle.status}</span></td>
+                    <td>${vehicle.odometer || 0} km</td>
+                    <td>${vehicle.fuel_level || 'N/A'}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+        
+        document.getElementById('vehicleSearch').addEventListener('input', filterVehicles);
+        
+        function clearCustomerSearch() {
+            document.getElementById('customerSearch').value = '';
+            document.getElementById('customerSearch').dispatchEvent(new Event('input'));
+        }
+        
+        function clearVehicleFilters() {
+            document.getElementById('vehicleSearch').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterVehicles();
+        }
+        
+        // Initialize tables with all data
+        document.getElementById('customerSearch').dispatchEvent(new Event('input'));
+        filterVehicles();
+    </script>
+</body>
+</html>

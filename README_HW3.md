@@ -1,4 +1,4 @@
-# Homework 3: File Operations & Protocol Buffers
+# Homework 3: File Operations & Protocol Buffers + Web UI
 
 **Course:** AIN-3005 Advanced Python Programming  
 **Student:** İrem Aslan  
@@ -7,7 +7,15 @@
 
 ## 📋 Overview
 
-This homework demonstrates advanced file operations in Python using both JSON and Protocol Buffers for serializing and deserializing the Car Rental & Fleet Maintenance System (CRFMS) state.
+This homework demonstrates advanced file operations in Python using both JSON and Protocol Buffers for serializing and deserializing the Car Rental & Fleet Maintenance System (CRFMS) state. Additionally, includes an interactive web-based **Snapshot Viewer** for visualizing and analyzing the data.
+
+### 🌟 Key Features
+
+- **Comprehensive Dataset**: 12 customers, 12 vehicles, 10 reservations, 5 rentals, 10 maintenance records, 5 invoices, 4 payments, 10 notifications
+- **Dual Format Support**: JSON (human-readable) and Protocol Buffers (efficient binary)
+- **68.2% Size Reduction**: Protobuf achieves significant compression (18,264 → 5,809 bytes)
+- **Interactive Web UI**: Modern Flask application with statistics dashboard and data visualization
+- **CLI Tools**: Format conversion and report generation utilities
 
 ## 🎯 Requirements Compliance
 
@@ -64,10 +72,23 @@ This homework demonstrates advanced file operations in Python using both JSON an
      - Notification stats
    - Pretty-printed output to stdout
 
-6. **Documentation** ✓
+6. **Web-Based Snapshot Viewer** ✓ (BONUS)
+   - Created `webapp/snapshot_viewer.py` Flask application
+   - Interactive web UI for viewing snapshot data
+   - Features:
+     - Browse JSON and Protobuf files
+     - View detailed data in organized tables
+     - Statistics dashboard with key metrics
+     - Format comparison with visual charts
+     - REST API endpoints
+   - Modern responsive design with gradients
+   - Real-time file size analysis
+
+7. **Documentation** ✓
    - This README with complete instructions
    - Code comments and docstrings
    - Usage examples
+   - Web UI guide
 
 ### ✅ Technical Requirements
 
@@ -224,14 +245,31 @@ python convert_format.py --help
 
 ```bash
 # From JSON file
-python generate_report.py snapshots/crfms_snapshot.json
+python generate_report.py snapshots/test_snapshot.json
 
 # From Protobuf file
-python generate_report.py snapshots/crfms_snapshot.pb
+python generate_report.py snapshots/test_snapshot.pb
 
 # Auto-detect format
 python generate_report.py snapshots/my_snapshot
 ```
+
+### 5. Run Web-Based Snapshot Viewer
+
+```bash
+# Start the Flask web application
+cd webapp
+python snapshot_viewer.py
+
+# Or with virtual environment
+../.venv/bin/python snapshot_viewer.py
+```
+
+Then open your browser to `http://127.0.0.1:5000` to:
+- Browse all snapshot files
+- View detailed data in tables
+- Compare JSON vs Protobuf sizes
+- Access REST API endpoints
 
 #### Sample Report Output
 
@@ -421,6 +459,105 @@ diff report_json.txt report_pb.txt
    - Clean architecture
    - Separation of concerns
 
+## � Snapshot Viewer Web Application
+
+### Overview
+An interactive Flask web application for viewing and analyzing CRFMS snapshot data from both JSON and Protocol Buffers files.
+
+### Features
+
+**📊 Interactive Dashboard**
+- Browse all JSON and Protobuf snapshot files
+- View detailed statistics and metrics
+- Beautiful, responsive UI with modern gradients
+
+**📄 Comprehensive Data Views**
+- Customers, Vehicles, Reservations
+- Rental Agreements, Invoices, Payments
+- Maintenance Records, Notifications
+- All data displayed in organized tables with status badges
+
+**📈 Format Comparison**
+- Side-by-side JSON vs Protobuf comparison
+- File size analysis with visual progress bars
+- Compression efficiency statistics
+- Detailed savings calculations
+
+**🎨 Modern UI Design**
+- Gradient backgrounds and cards
+- Color-coded status badges
+- Responsive table layouts
+- Real-time statistics cards
+
+### Running the Snapshot Viewer
+
+```bash
+# Start the web server
+cd webapp
+python snapshot_viewer.py
+
+# Or with virtual environment
+cd webapp
+../.venv/bin/python snapshot_viewer.py
+```
+
+### Access the Application
+
+Open your browser and navigate to:
+```
+http://127.0.0.1:5000
+```
+
+### Available Pages
+
+1. **Home Page** (`/`)
+   - Lists all available JSON and Protobuf snapshots
+   - Quick access to view any snapshot
+   - Link to comparison page
+
+2. **Snapshot Viewer** (`/view/<type>/<filename>`)
+   - Complete data display with all entities
+   - Statistics dashboard with key metrics
+   - Organized sections for each entity type
+   - Status indicators and badges
+
+3. **Format Comparison** (`/compare`)
+   - Visual comparison of JSON vs Protobuf sizes
+   - Percentage savings calculations
+   - Summary statistics table
+   - Progress bars showing compression efficiency
+
+### API Endpoints
+
+The application also provides REST API access:
+
+```bash
+# Get snapshot data as JSON
+curl http://127.0.0.1:5000/api/snapshot/json/test_snapshot.json
+
+# Get protobuf snapshot data (converted to JSON response)
+curl http://127.0.0.1:5000/api/snapshot/proto/test_snapshot.pb
+```
+
+### Screenshot Features
+
+- **12 Customers** displayed with contact information
+- **12 Vehicles** with class, location, status, and mileage
+- **10 Reservations** with pickup/return times
+- **5 Active/Completed Rentals** with payment status
+- **10 Maintenance Records** with service types
+- **5 Invoices** showing revenue ($1,710 total)
+- **4 Payments** tracking completed transactions ($650)
+- **10 Notifications** for customer communications
+
+### Technical Stack
+
+- **Backend**: Flask web framework
+- **Templates**: Jinja2 with modern CSS
+- **Data Loading**: Supports both JSON and Protobuf formats
+- **Real-time Stats**: Dynamic calculation of aggregates
+- **Responsive Design**: Works on desktop and mobile
+
 ## 🎓 Learning Outcomes
 
 This assignment demonstrates:
@@ -435,6 +572,10 @@ This assignment demonstrates:
 - ✅ Error handling and exceptions
 - ✅ Data aggregation and reporting
 - ✅ Code organization and modularity
+- ✅ **Web application development with Flask**
+- ✅ **Interactive data visualization**
+- ✅ **REST API design**
+- ✅ **Responsive UI/UX design**
 
 ## 📚 References
 
